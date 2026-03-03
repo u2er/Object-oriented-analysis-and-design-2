@@ -123,7 +123,7 @@ namespace SmartHomeAPI.Models
     {
         public override string Brand => "Zigbee";
         public override string Type => "Lamp";
-        private string _color = "Warm White";
+        private string _color = "White";
 
         public void TurnOn() { IsOn = true; }
         public void TurnOff() { IsOn = false; }
@@ -213,7 +213,7 @@ namespace SmartHomeAPI.Models
     {
         public override string Brand => "Tuya";
         public override string Type => "Lamp";
-        private string _color = "Cool White";
+        private string _color = "White";
 
         public void TurnOn() { IsOn = true; }
         public void TurnOff() { IsOn = false; }

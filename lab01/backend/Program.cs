@@ -17,7 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
-builder.Services.AddSingleton<SmartHomeManagerNoPattern>();
+builder.Services.AddSingleton<SmartHomeManager>();
 
 var app = builder.Build();
 
