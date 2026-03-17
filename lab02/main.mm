@@ -282,7 +282,7 @@ struct Palette {
                                               styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable
                                                 backing:NSBackingStoreBuffered
                                                   defer:NO];
-    [self.window setTitle:@"Zen Finder"];
+    [self.window setTitle:@"MyFinder"];
     [self.window center];
     [self.window setBackgroundColor:Palette::background()];
     
@@ -305,7 +305,7 @@ int main(int argc, const char * argv[]) {
         NSMenu* menuBar = [[NSMenu alloc] init];
         NSMenuItem* appMenuItem = [[NSMenuItem alloc] init];
         [menuBar addItem:appMenuItem];
-        NSMenu* appMenu = [[NSMenu alloc] initWithTitle:@"Zen Finder"];
+        NSMenu* appMenu = [[NSMenu alloc] initWithTitle:@"MyFinder"];
         [appMenu addItemWithTitle:@"Quit" action:@selector(terminate:) keyEquivalent:@"q"];
         [appMenuItem setSubmenu:appMenu];
         [NSApp setMainMenu:menuBar];
