@@ -10,9 +10,9 @@ namespace SmartHomeAPI.Controllers
     [Route("api/[controller]")]
     public class SmartHomeController : ControllerBase
     {
-        private readonly SmartHomeManager _manager;
+        private readonly SmartHomeManagerNoPattern _manager;
 
-        public SmartHomeController(SmartHomeManager manager)
+        public SmartHomeController(SmartHomeManagerNoPattern manager)
         {
             _manager = manager;
         }
