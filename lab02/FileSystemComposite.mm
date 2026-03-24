@@ -41,7 +41,7 @@ long long FSFile::size() const {
 }
 
 std::vector<std::shared_ptr<IFileSystemNode>> FSFile::children() const {
-    return {}; // У файла нет детей
+    return {};
 }
 
 // --- Директория ---
@@ -73,7 +73,7 @@ std::vector<std::shared_ptr<IFileSystemNode>> FSDirectory::children() const {
     if (!contents) return list;
 
     for (NSString* item in contents) {
-        if ([item hasPrefix:@"."]) continue; // Скрываем скрытые файлы
+        if ([item hasPrefix:@"."]) continue;
         
         NSString* fullPath = [nsPath stringByAppendingPathComponent:item];
         BOOL isDir = NO;

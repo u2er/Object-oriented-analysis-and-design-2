@@ -4,7 +4,7 @@
 FSPlainNode::FSPlainNode(const std::string& path) : m_path(path) {
     NSString* nsPath = [NSString stringWithUTF8String:path.c_str()];
     m_name = [[nsPath lastPathComponent] UTF8String];
-    
+
     BOOL isDir = NO;
     [[NSFileManager defaultManager] fileExistsAtPath:nsPath isDirectory:&isDir];
     m_isDir = isDir;
@@ -45,7 +45,7 @@ std::string FSPlainNode::creationDate() const {
 
 std::vector<std::shared_ptr<IFileSystemNode>> FSPlainNode::children() const {
     std::vector<std::shared_ptr<IFileSystemNode>> list;
-    if (!m_isDir) return list; // Без паттерна приходится делать проверку вручную
+    if (!m_isDir) return list;
     
     NSString* nsPath = [NSString stringWithUTF8String:m_path.c_str()];
     NSArray* contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:nsPath error:nil];

@@ -13,10 +13,8 @@ public:
     virtual long long size() const = 0;
     virtual std::string creationDate() const = 0;
     
-    // Получить содержимое (для файлов вернет пустой вектор)
     virtual std::vector<std::shared_ptr<IFileSystemNode>> children() const = 0;
 
-    // Операции
     virtual bool renameItem(const std::string& newName) = 0;
     virtual bool remove() = 0;
 };

@@ -3,8 +3,7 @@
 #include <string>
 #include <vector>
 
-// ── Переключатель ядер ──
-#define USE_COMPOSITE 1 // 1 = Компоновщик, 0 = Без паттерна
+#define USE_COMPOSITE 1
 
 #if USE_COMPOSITE
 #include "FileSystemComposite.h"
@@ -14,20 +13,14 @@
 #define CREATE_NODE(path) std::make_shared<FSPlainNode>(path)
 #endif
 
-// ─────────────────────────────────────────────
-// MARK: - Цветовая палитра
-// ─────────────────────────────────────────────
 struct Palette {
-    static NSColor* background()  { return [NSColor colorWithRed:0.08 green:0.08 blue:0.10 alpha:1.0]; }
-    static NSColor* surface()     { return [NSColor colorWithRed:0.12 green:0.12 blue:0.15 alpha:1.0]; }
-    static NSColor* accent()      { return [NSColor colorWithRed:0.40 green:0.65 blue:1.00 alpha:1.0]; }
+    static NSColor* background() { return [NSColor colorWithRed:0.08 green:0.08 blue:0.10 alpha:1.0]; }
+    static NSColor* surface() { return [NSColor colorWithRed:0.12 green:0.12 blue:0.15 alpha:1.0]; }
+    static NSColor* accent() { return [NSColor colorWithRed:0.40 green:0.65 blue:1.00 alpha:1.0]; }
     static NSColor* textPrimary() { return [NSColor colorWithRed:0.95 green:0.95 blue:0.97 alpha:1.0]; }
-    static NSColor* textSecondary(){return [NSColor colorWithRed:0.55 green:0.55 blue:0.65 alpha:1.0]; }
+    static NSColor* textSecondary() {return [NSColor colorWithRed:0.55 green:0.55 blue:0.65 alpha:1.0]; }
 };
 
-// ─────────────────────────────────────────────
-// MARK: - Delegate TableView & Основная Логика
-// ─────────────────────────────────────────────
 @interface MainAppController : NSObject <NSTableViewDataSource, NSTableViewDelegate> {
     NSTableView* _tableView;
     NSTextField* _pathLabel;
@@ -50,7 +43,6 @@ struct Palette {
     _currentDir = CREATE_NODE(path);
     _files = _currentDir->children();
     
-    // Сортировка: папки сверху
     std::sort(_files.begin(), _files.end(), [](const auto& a, const auto& b) {
         if (a->isDirectory() != b->isDirectory()) return a->isDirectory();
         return a->name() < b->name();
@@ -65,7 +57,6 @@ struct Palette {
     content.wantsLayer = YES;
     content.layer.backgroundColor = Palette::surface().CGColor;
 
-    // --- Top Bar ---
     NSView* topBar = [[NSView alloc] initWithFrame:NSMakeRect(0, 550, 800, 50)];
     topBar.wantsLayer = YES;
     topBar.layer.backgroundColor = Palette::background().CGColor;
@@ -86,7 +77,6 @@ struct Palette {
     [_pathLabel setFont:[NSFont systemFontOfSize:14 weight:NSFontWeightMedium]];
     [topBar addSubview:_pathLabel];
 
-    // --- Main Table ---
     NSScrollView* scrollView = [[NSScrollView alloc] initWithFrame:NSMakeRect(0, 0, 800, 550)];
     [scrollView setHasVerticalScroller:YES];
     
@@ -101,7 +91,7 @@ struct Palette {
     [_tableView addTableColumn:colIcon];
     [_tableView addTableColumn:colName];
     [_tableView addTableColumn:colSize];
-    [_tableView setHeaderView:nil]; // Скрываем заголовки для минимализма
+    [_tableView setHeaderView:nil];
     [_tableView setDelegate:self];
     [_tableView setDataSource:self];
     [_tableView setBackgroundColor:Palette::surface()];
@@ -111,7 +101,6 @@ struct Palette {
     [_tableView setTarget:self];
     [_tableView setDoubleAction:@selector(rowDoubleClicked)];
 
-    // Context Menu
     NSMenu* menu = [[NSMenu alloc] init];
     
     NSMenuItem* openItem = [[NSMenuItem alloc] initWithTitle:@"Open" action:@selector(rowDoubleClicked) keyEquivalent:@""];
@@ -138,7 +127,6 @@ struct Palette {
     [content addSubview:scrollView];
 }
 
-// --- Навигация ---
 - (void)goUp {
     if (!_currentDir) return;
     NSString* current = [NSString stringWithUTF8String:_currentDir->path().c_str()];
@@ -156,14 +144,12 @@ struct Palette {
     if (node->isDirectory()) {
         [self loadDirectory:node->path()];
     } else {
-        // Современный способ через NSURL:
         NSString* nsPath = [NSString stringWithUTF8String:node->path().c_str()];
         NSURL* fileURL = [NSURL fileURLWithPath:nsPath];
         [[NSWorkspace sharedWorkspace] openURL:fileURL];
     }
 }
 
-// --- Операции ---
 - (void)showInfo {
     NSInteger row = [_tableView clickedRow];
     if (row < 0) return;
@@ -175,7 +161,6 @@ struct Palette {
     long long size = node->size();
     NSString* sizeStr = size > 1024*1024 ? [NSString stringWithFormat:@"%.2f MB", size/1048576.0] : [NSString stringWithFormat:@"%lld Bytes", size];
 
-    // Дополнительное окошечко (Инфо)
     NSAlert* alert = [[NSAlert alloc] init];
     [alert setMessageText:[NSString stringWithFormat:@"Info: %@", name]];
     [alert setInformativeText:[NSString stringWithFormat:@"Type:\t%@\nSize:\t%@\nCreated:\t%@", type, sizeStr, date]];
@@ -202,7 +187,7 @@ struct Palette {
     if ([alert runModal] == NSAlertFirstButtonReturn) {
         std::string newName = [[input stringValue] UTF8String];
         if (node->renameItem(newName)) {
-            [self loadDirectory:_currentDir->path()]; // Обновляем
+            [self loadDirectory:_currentDir->path()];
         }
     }
 }
@@ -222,7 +207,6 @@ struct Palette {
     }
 }
 
-// --- TableView Data Source ---
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return _files.size();
 }
@@ -267,9 +251,7 @@ struct Palette {
 }
 @end
 
-// ─────────────────────────────────────────────
-// MARK: - AppDelegate & Main
-// ─────────────────────────────────────────────
+
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 @property (strong) NSWindow *window;
 @property (strong) MainAppController *appController;
